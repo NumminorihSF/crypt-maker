@@ -1,0 +1,24 @@
+{
+  "name": "crypt-maker",
+  "version": "0.1.1",
+  "description": "Make encrypted message and decrypt them by node.js crypto module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NumminorihSF/crypt-maker.git"
+  },
+  "keywords": [
+    "crypt",
+    "nodejs",
+    "iojs"
+  ],
+  "author": "Konstantine Petryaev <numminorihsf@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NumminorihSF/crypt-maker/issues"
+  },
+  "homepage": "https://github.com/NumminorihSF/crypt-maker#readme"
+}
