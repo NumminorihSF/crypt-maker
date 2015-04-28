@@ -61,9 +61,178 @@ If `algorithm !== 'no'` and no key passed to constructor - throws error
 * `SOP`: which symbols indicate separate between header and message. Default `\r\n`
 * `headerEncrypted`: `true` if header should encrypted. Default `false`
 
+## cm.decrypt(message) 
+
+Return decrypted string. If `algorithm == 'no` returns `message`.
+
+Parameters:
+
+Name      |Type    |Description
+----------|--------|-----------
+`message` |	string | 	
 
 
-## LICENSE - "MIT License"
+## cm.encrypt(message)
+
+Return encrypted string. If `algorithm == 'no` returns `message`.
+
+Parameters:
+
+Name 	  | Type   | Description
+----------|--------|------------
+`message` | string | 	
+
+
+## cm.format(data)
+
+Make string from JSON
+
+Parameters:
+
+Name    | Type                 | Description
+--------|----------------------|-------------
+`data` 	| any, except function |
+
+## cm.parse(data)
+Unformat message back to Object | Boolean | String | Number
+
+Parameters:
+
+Name 	| Type | Description
+--------|------|------------
+data 	|string| 	
+
+
+## cm.getBody(message)
+
+Get body from encrypted message. If `typeof message == undefined || message length == 0` 
+or no SOP at message, returns `null`. Else if can't parse message - return `null`.
+
+Parameters:
+
+Name 	| Type   |	Description
+--------|--------|--------------------
+message | string |	encrypted message
+
+
+## cm.getBodyAsync(message, callback)
+
+Same as sync version. But doesn't return `null`, and returns error objects.
+**Is not realy async!**
+
+Parameters:
+
+Name 	 | Type    | Description
+---------|---------|------------------
+message  | string  | encrypted message
+callback | function| 	
+
+
+## cm.getHeader(message)
+
+Get header from encrypted message. If `typeof message == undefined || message length == 0` 
+or no SOP at message, returns `null`. Else if can't parse message - return `null`.
+
+Parameters:
+
+Name 	| Type   |	Description
+--------|--------|--------------------
+message | string |	encrypted message
+
+
+## cm.getHeaderAsync(message, callback)
+
+Same as sync version. But doesn't return `null`, and returns error objects.
+**Is not realy async!**
+
+Parameters:
+
+Name 	 | Type    | Description
+---------|---------|------------------
+message  | string  | encrypted message
+callback | function| 	
+
+
+## cm.makeMessage(message)
+
+Make encrypt message form object.
+
+Parameters:
+
+Name     |	Type  |	Description
+---------|--------|----------------
+message  | Object | Properties	
+         |        |     
+         |        |     Name  | Type           |Description
+         |        |     ------|----------------|-----------
+         |        |     header|	Object, string |
+         |        |     body  |	Object, string |	
+
+
+## cm.makeMessageAsync(message, callback)
+
+Same as sync version. But doesn't return `null`, and returns error objects.
+**Is not realy async!**
+
+
+Parameters:
+
+Name     |	Type   |	Description
+---------|---------|----------------
+message  | Object  | Properties	
+         |         |     
+         |         |     Name  | Type           |Description
+         |         |     ------|----------------|-----------
+         |         |     header|	Object, string |
+         |         |     body  |	Object, string |	
+callback | function| 
+
+
+
+
+## cm.parseMessage(message)
+
+Decrypt message form object. Returns Object `{header: ... , message: ... }`
+
+Parameters:
+
+Name     |	Type  |	Description
+---------|--------|----------------
+message  | string | 
+
+
+## cm.splitMessages(raw)
+
+Splits many messages to array of messages.
+
+Parameters:
+
+Name 	| Type   |	Description
+--------|--------|---------------
+raw 	| string |	raw messages string
+
+Returns:
+return `[]` if no EOM at the end of raw string
+
+
+## splitMessagesAsync(raw)
+
+Splits many messages to array.
+
+Parameters:
+
+Name 	 | Type   | 	Description
+---------|--------|---------------
+raw 	 |string  | 	messages
+callback |function| 	
+
+Returns:
+return `[]` if no EOM at the end of raw string
+
+
+
+
+# LICENSE - "MIT License"
 
 Copyright (c) 2015 Konstantine Petryaev
 

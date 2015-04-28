@@ -109,10 +109,9 @@ CryptMaker.prototype.parse = function(data){
 /**
  * Make string from JSON
  * @param {*} data
- * @returns {null|string}
+ * @returns {string}
  */
 CryptMaker.prototype.format = function(data){
-    if (!data) return null;
     return JSON.stringify(data);
 };
 
