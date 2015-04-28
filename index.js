@@ -62,7 +62,7 @@ function CryptMaker (options){
     this.sop = options.SOP || SOP;
     this.algorithm = options.algorithm || algorithm;
     this.key = options.key;
-    if (!this.key) throw Error('need key');
+    if (this.algorithm !== 'no' && !this.key) throw Error('need key');
     this.headerEncrypted = Boolean(options.headerEncrypted) || false;
 }
 
