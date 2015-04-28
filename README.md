@@ -159,14 +159,14 @@ Make encrypt message form object.
 
 Parameters:
 
-Name     |	Type  |	Description
----------|--------|----------------
-message  | Object | Properties	
-         |        |     
-         |        |     Name  | Type           |Description
-         |        |     ------|----------------|-----------
-         |        |     header|	Object, string |
-         |        |     body  |	Object, string |	
+Parameters:
+
+Name          |	Type           |	Description
+--------------|----------------|----------------
+message       | Object         | Properties	
+message.header|	Object, string |
+message.body  |	Object, string |	
+
 
 
 ## cm.makeMessageAsync(message, callback)
@@ -177,15 +177,12 @@ Same as sync version. But doesn't return `null`, and returns error objects.
 
 Parameters:
 
-Name     |	Type   |	Description
----------|---------|----------------
-message  | Object  | Properties	
-         |         |     
-         |         |     Name  | Type           |Description
-         |         |     ------|----------------|-----------
-         |         |     header|	Object, string |
-         |         |     body  |	Object, string |	
-callback | function| 
+Name          |	Type           |	Description
+--------------|----------------|----------------
+message       | Object         | Properties	
+message.header|	Object, string |
+message.body  |	Object, string |	
+callback      | function       | 
 
 
 
