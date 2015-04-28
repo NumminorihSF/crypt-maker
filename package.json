@@ -1,6 +1,6 @@
 {
   "name": "crypt-maker",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Make encrypted message and decrypt them by node.js crypto module",
   "main": "index.js",
   "scripts": {

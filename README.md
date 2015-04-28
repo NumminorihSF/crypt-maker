@@ -130,7 +130,7 @@ callback | function|
 
 ## cm.getHeader(message)
 
-Get header from encrypted message. If `typeof message == undefined || message length == 0` 
+Get header from encrypted message. If `typeof message == undefined || message.length == 0` 
 or no SOP at message, returns `null`. Else if can't parse message - return `null`.
 
 Parameters:
@@ -189,7 +189,7 @@ callback      | function       |
 
 ## cm.parseMessage(message)
 
-Decrypt message form object. Returns Object `{header: ... , message: ... }`
+Decrypt message form object. Returns Object `{header: ... , body: ... }`
 
 Parameters:
 
