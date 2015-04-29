@@ -266,6 +266,10 @@ CryptMaker.prototype.splitMessagesAsync = function(raw, callback){
     });
 };
 
+CryptMaker.prototype.addEom = function(string){
+    return string+this.eom;
+};
+
 CryptMaker.prototype.createCryptMaker = function(opt){
     return new CryptMaker(opt);
 };
