@@ -59,6 +59,7 @@ var crypto = require('crypto');
  */
 function CryptMaker (options){
     this.eom = options.EOM || EOM;
+    this.eomRE = new RegExp(this.eom+'$');
     this.sop = options.SOP || SOP;
     this.algorithm = options.algorithm || algorithm;
     this.key = options.key;
@@ -163,6 +164,7 @@ CryptMaker.prototype.getHeaderAsync = function(message, callback){
  */
 CryptMaker.prototype.getBody = function(message){
     if (typeof message === 'undefined' || message.length == 0) return null;
+    message = message.replace(this.eomRE, '');
     if (message.indexOf(this.sop) === -1) return null;
     return this.parse(this.decrypt(message.split(this.sop)[1]));
 };
@@ -177,6 +179,7 @@ CryptMaker.prototype.getBodyAsync = function(message, callback){
     if (typeof message === 'undefined' || message.length == 0) return setImmediate(function(){
         callback(Error('Need message to return header'));
     });
+    message = message.replace(this.eomRE, '');
     if (message.indexOf(this.sop) === -1) return setImmediate(function(){
         callback(Error('No SOP in message'));
     });
@@ -233,6 +236,7 @@ CryptMaker.prototype.makeMessageAsync = function(message,callback){
 CryptMaker.prototype.parseMessage = function(message){
     if (!message) return null;
     if (message.indexOf(this.sop) == -1) return null;
+    message = message.replace(this.eomRE, '');
     var array = message.split(this.sop);
     var json = {};
     if (this.headerEncrypted) json.header = this.parse(this.decrypt(array[0]));
@@ -249,6 +253,9 @@ CryptMaker.prototype.parseMessage = function(message){
 CryptMaker.prototype.splitMessages = function(raw){
     var array = raw.split(this.eom);
     if (array.length && array.pop().length) return [];
+    for (var i = 0; i < array.length; i++){
+        array[i] = this.addEom(array[i]);
+    }
     return array;
 };
 
@@ -262,8 +269,11 @@ CryptMaker.prototype.splitMessagesAsync = function(raw, callback){
     var array = raw.split(this.eom);
     setImmediate(function(){
         if (array.length && array.pop().length) return [];
-        return callback(null, raw);
-    });
+        for (var i = 0; i < array.length; i++){
+            array[i] = this.addEom(array[i]);
+        }
+        return callback(null, array);
+    }.bind(this));
 };
 
 CryptMaker.prototype.addEom = function(string){

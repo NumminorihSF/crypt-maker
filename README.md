@@ -209,10 +209,10 @@ Name 	| Type   |	Description
 raw 	| string |	raw messages string
 
 Returns:
-return `[]` if no EOM at the end of raw string
+return `[]` if no EOMs at the end of raw strings
 
 
-## splitMessagesAsync(raw)
+## cm.splitMessagesAsync(raw)
 
 Splits many messages to array.
 
@@ -224,8 +224,21 @@ raw 	 |string  | 	messages
 callback |function| 	
 
 Returns:
-return `[]` if no EOM at the end of raw string
+return `[]` if no EOMs at the end of raw strings
 
+## cm.addEom(string)
+
+Splits many messages to array.
+
+Parameters:
+
+Name 	 | Type   | 	Description
+---------|--------|---------------
+string 	 |string  | 	one encrypted message
+	
+
+Returns:
+return string+EOM symbol.
 
 
 
