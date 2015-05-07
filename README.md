@@ -1,7 +1,7 @@
-crypt-maker
+ crypt-maker
 ===========================
 
-Use node.js crypt api for make encrypted messages.
+Use node.js crypt api for make encrypted messages. Works sync. For async crypt-maker - see crypt-maker-async
 
 Install with:
 
@@ -63,7 +63,7 @@ If `algorithm !== 'no'` and no key passed to constructor - throws error
 
 ## cm.decrypt(message) 
 
-Return decrypted string. If `algorithm == 'no` returns `message`.
+Return decrypted string. If `algorithm == 'no'` returns `message`.
 
 Parameters:
 
@@ -74,7 +74,7 @@ Name      |Type    |Description
 
 ## cm.encrypt(message)
 
-Return encrypted string. If `algorithm == 'no` returns `message`.
+Return encrypted string. If `algorithm == 'no'` returns `message`.
 
 Parameters:
 
@@ -156,8 +156,6 @@ callback | function|
 ## cm.makeMessage(message)
 
 Make encrypt message form object.
-
-Parameters:
 
 Parameters:
 
