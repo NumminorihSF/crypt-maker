@@ -52,9 +52,9 @@ var crypto = require('crypto');
  * @param {Object} options
  * @param {string} [options.EOM] - End of message symbol. Default = '\r\n\r\n'
  * @param {string} [options.SOP] - Separator of parts symbol. Default = '\r\n'
- * @param {string} [options.algorithm] - algorithm to use. Default = 'aes128'
- * @param {string} options.key - key to use in crypt. If no key throw Error;
- * @param {boolean} [options.headerEncrypted] true if need encrypt header of false if need not. Deafult false
+ * @param {string} [options.algorithm] - algorithm to use. 'no' if doesn't need crypt. Default = 'aes128'
+ * @param {string} [options.key] - key to use in crypt. If no key and algorithm !== 'no' throw Error
+ * @param {boolean} [options.headerEncrypted] true if need encrypt header of false if need not. Default false
  * @constructor
  */
 function CryptMaker (options){
