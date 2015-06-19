@@ -201,9 +201,11 @@ CryptMaker.prototype.getBodyAsync = function(message, callback){
  * Make encrypt message.
  * @param {Object} message
  * @param {Object|string} message.header
+ * @param {Object|string} [body]
  * @returns {string} encrypted message.
  */
-CryptMaker.prototype.makeMessage = function(message){
+CryptMaker.prototype.makeMessage = function(message, body){
+    if (body) message = {header: message, body: body};
     if (this.headerEncrypted) message.header = this.encrypt(this.format(message.header));
     else message.header = this.format(message.header);
     message.body = this.encrypt(this.format(message.body));
