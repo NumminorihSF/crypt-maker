@@ -286,5 +286,13 @@ CryptMaker.prototype.createCryptMaker = function(opt){
     return new CryptMaker(opt);
 };
 
+CryptMaker.prototype.replaceHeader = function(header, message){
+    if (!message) return null;
+    if (message.indexOf(this.sop) == -1) return null;
+    var array = message.split(this.sop);
+    array[0] = this.headerEncrypted?this.encrypt(JSON.stringify(header)):JSON.stringify(header);
+    return array[0]+this.sop+array[1];
+};
+
 module.exports = CryptMaker;
 
