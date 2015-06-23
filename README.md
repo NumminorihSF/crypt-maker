@@ -1,7 +1,9 @@
  crypt-maker
 ===========================
 
-Use node.js crypt api for make encrypted messages. Works sync. For async crypt-maker - see crypt-maker-async
+Use node.js crypt api for make encrypted messages. Works sync.
+
+[Class documentation by jsDuck](http://numminorihsf.github.io/crypt-maker/jsduck)
 
 Install with:
 
@@ -51,9 +53,9 @@ Is the same as:
 
 ## new CM()
 
-* `CM.createClient({key: '123'}) = amiio.createClient({key: '123', algorithm:'aes123', EOM:'\r\n\r\n', SOP:'\r\n'})`
+* `CM.createCryptMaker({key: '123'}) = crypt.createCryptMaker({key: '123', algorithm:'aes123', EOM:'\r\n\r\n', SOP:'\r\n'})`
 
-If `algorithm !== 'no'` and no key passed to constructor - throws error
+If `algorithm !== 'no'` and no key passed to constructor - throws error (EmptyKeyError)
 
 * `key`: key to crypt strings
 * `algorithm`: which algorithm use to encrypt messages. Default `aes128`
@@ -61,46 +63,46 @@ If `algorithm !== 'no'` and no key passed to constructor - throws error
 * `SOP`: which symbols indicate separate between header and message. Default `\r\n`
 * `headerEncrypted`: `true` if header should encrypted. Default `false`
 
-## cm.decrypt(message) 
+## cm.decrypt(str) 
 
-Return decrypted string. If `algorithm == 'no'` returns `message`.
+Return decrypted string. If `algorithm == 'no'` returns `str`.
 
 Parameters:
 
 Name      |Type    |Description
 ----------|--------|-----------
-`message` |	string | 	
+`str`     |	String | string to decrypt 	
 
 
-## cm.encrypt(message)
+## cm.encrypt(str)
 
-Return encrypted string. If `algorithm == 'no'` returns `message`.
-
-Parameters:
-
-Name 	  | Type   | Description
-----------|--------|------------
-`message` | string | 	
-
-
-## cm.format(data)
-
-Make string from JSON
+Return encrypted string. If `algorithm == 'no'` returns `str`.
 
 Parameters:
 
-Name    | Type                 | Description
---------|----------------------|-------------
-`data` 	| any, except function |
+Name 	| Type   | Description
+------|--------|------------
+`str` | String | 	string to encrypt
 
-## cm.parse(data)
-Unformat message back to Object | Boolean | String | Number
+
+## cm.format(messagePart) Deprecated
+
+Make string from JSON with message part.
 
 Parameters:
 
-Name 	| Type | Description
---------|------|------------
-data 	|string| 	
+Name            | Type                 | Description
+----------------|----------------------|-------------
+`messagePart` 	| any, except function |
+
+## cm.parse(messagePart) Deprecated
+Unformat message part back to Object | Boolean | String | Number.
+
+Parameters:
+
+Name        	| Type | Description
+--------------|------|------------
+`messagePart`	|String| 	
 
 
 ## cm.getBody(message)
@@ -110,22 +112,22 @@ or no SOP at message, returns `null`. Else if can't parse message - return `null
 
 Parameters:
 
-Name 	| Type   |	Description
---------|--------|--------------------
-message | string |	encrypted message
+Name     | Type   |	Description
+---------|--------|--------------------
+`message`| String |	encrypted message
 
 
-## cm.getBodyAsync(message, callback)
+## cm.getBodyAsync(message, callback) Deprecated
 
 Same as sync version. But doesn't return `null`, and returns error objects.
 **Is not realy async!**
 
 Parameters:
 
-Name 	 | Type    | Description
----------|---------|------------------
-message  | string  | encrypted message
-callback | function| 	
+Name 	     | Type    | Description
+-----------|---------|------------------
+`message`  | String  | encrypted message
+`callback` | Function| 	
 
 
 ## cm.getHeader(message)
@@ -135,65 +137,66 @@ or no SOP at message, returns `null`. Else if can't parse message - return `null
 
 Parameters:
 
-Name 	| Type   |	Description
---------|--------|--------------------
-message | string |	encrypted message
+Name  	 | Type   |	Description
+---------|--------|--------------------
+`message`| String |	encrypted message
 
 
-## cm.getHeaderAsync(message, callback)
-
-Same as sync version. But doesn't return `null`, and returns error objects.
-**Is not realy async!**
-
-Parameters:
-
-Name 	 | Type    | Description
----------|---------|------------------
-message  | string  | encrypted message
-callback | function| 	
-
-
-## cm.makeMessage(message)
-
-Make encrypt message form object.
-
-Parameters:
-
-Name          |	Type           |	Description
---------------|----------------|----------------
-message       | Object         | Properties	
-message.header|	Object, string |
-message.body  |	Object, string |	
-
-
-
-## cm.makeMessageAsync(message, callback)
+## cm.getHeaderAsync(message, callback) Deprecated
 
 Same as sync version. But doesn't return `null`, and returns error objects.
-**Is not realy async!**
+**Is not really async!**
+
+Parameters:
+
+Name 	    | Type    | Description
+----------|---------|------------------
+`message` | String  | encrypted message
+`callback`| Function| 	
+
+
+## cm.makeMessage(message[, body])
+
+Make encrypt message form object. If body is defined - message should be header of message.
+
+Parameters:
+
+Name            |	Type    |	Description
+----------------|---------|----------------
+`message`       | Object  | Message object. If `body` is not defined - should be header object.	
+`message.header`|	Object  | Header of message. Only if `body` parameter is not defined.
+`message.body`  |	Object  | Body of message. Only if `body` parameter is not defined.
+`body`          | Object  | Optional. If defined - body of message.
+
+
+
+## cm.makeMessageAsync(message, callback) Deprecated
+
+Same as sync version. But doesn't return `null`, and returns error objects.
+**Is not really async!**
 
 
 Parameters:
 
-Name          |	Type           |	Description
---------------|----------------|----------------
-message       | Object         | Properties	
-message.header|	Object, string |
-message.body  |	Object, string |	
-callback      | function       | 
+Name            |	Type    |	Description
+----------------|---------|----------------
+`message`       | Object  | Message object.	
+`message.header`|	Object  | Header of message.
+`message.body`  |	Object  | Body of message.	
+`callback`      | Function| Callback function.
 
 
 
 
 ## cm.parseMessage(message)
 
-Decrypt message form object. Returns Object `{header: ... , body: ... }`
+Decrypt message form object. Returns Object like `{header: ... , body: ... }`
 
 Parameters:
 
 Name     |	Type  |	Description
 ---------|--------|----------------
-message  | string | 
+`message`| String | 
 
 
 ## cm.splitMessages(raw)
@@ -203,40 +206,56 @@ Splits many messages to array of messages.
 Parameters:
 
 Name 	| Type   |	Description
---------|--------|---------------
-raw 	| string |	raw messages string
+------|--------|---------------
+`raw` 	| String |	raw messages string
 
 Returns:
 return `[]` if no EOMs at the end of raw strings
 
 
-## cm.splitMessagesAsync(raw)
+## cm.splitMessagesAsync(raw) Deprecated
 
 Splits many messages to array.
 
 Parameters:
 
-Name 	 | Type   | 	Description
+Name 	   | Type   | 	Description
 ---------|--------|---------------
-raw 	 |string  | 	messages
-callback |function| 	
+`raw` 	   |String  | 	messages
+`callback` |Function| 	
 
 Returns:
 return `[]` if no EOMs at the end of raw strings
 
-## cm.addEom(string)
+## cm.addEom(string) Deprecated
 
 Splits many messages to array.
 
 Parameters:
 
-Name 	 | Type   | 	Description
+Name 	   | Type   | 	Description
 ---------|--------|---------------
-string 	 |string  | 	one encrypted message
+`string` 	 |String  | 	one encrypted message
 	
 
 Returns:
 return string+EOM symbol.
+
+
+## cm.replaceHeader(header, message)
+
+Replace header of message to new.
+
+Parameters:
+
+Name 	     | Type   | 	Description
+-----------|--------|---------------
+`header`	 |Object  | 	new header for message
+`message`	 |String  | 	encrypted message
+	
+
+Returns:
+return message with new header.
 
 
 
