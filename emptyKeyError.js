@@ -25,21 +25,26 @@
 'use strict';
 /**
  * Class of error with empty key.
- *          Класс ошибки при отсутствии ключа.
+ *      Класс ошибки при отсутствии ключа.
  * @class CryptMaker.EmptyKeyError
  * @alternateClassName EmptyKeyError
  */
 
 /**
  * Constructor.
- *          Конструктор.
+ *      Конструктор.
  * @method constructor
  * @param {String} algorithm Algorithm that trying to use.
- *          Используемый алгоритм.
+ *      Используемый алгоритм.
  * @extends Error
  * @returns {EmptyKeyError}
  */
 function EmptyKeyError(algorithm){
+  /**
+   * Error message with algorithm, try to use.
+   *      Сообщение об ошибке с алгоритмом, который пытаетесь использовать.
+   * @type {String}
+   */
   this.message = 'Try use "' + algorithm + '" algorithm, but key for encryption is not defined.';
   Error.captureStackTrace(this, EmptyKeyError);
 }
@@ -50,6 +55,7 @@ function EmptyKeyError(algorithm){
 
 /**
  * Name of error.
+ *      Имя ошибки.
  * @static
  * @type {string}
  */

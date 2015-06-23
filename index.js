@@ -26,26 +26,26 @@
 
 /**
  * Class for work with encrypted message.
- *          Класс работы с зашифрованными сообщениями.
+ *      Класс работы с зашифрованными сообщениями.
  * @class CryptMaker
  */
 
 /**
  * Constructor.
- *          Конструктор.
+ *      Конструктор.
  * @method constructor
- * @param {Object} options
- *          Настройки
+ * @param {Object} options Options for CryptMaker
+ *      Настройки для CryptMaker
  * @param {String} [options.EOM='\r\n\r\n'] End of message symbol.
- *          Разделитель между сообщениями.
- * @param {String} [options.SOP='\r\n'] Separator of parts symbol.
- *          Символ окончания разделителя.
+ *      Разделитель между сообщениями.
+ * @param {String} [options.SOP='\r\n'] Separator of message parts symbol.
+ *      Символ разделитель мужду частями сообщения.
  * @param {String} [options.algorithm='aes128'] Algorithm to use. Use 'no' if doesn't need crypt.
- *          Алгоритм шифрования сообщений. Используйте 'no', если шифрования не нужно.
+ *      Алгоритм шифрования сообщений. Используйте 'no', если шифрования не нужно.
  * @param {String} [options.key] Key to use in crypt. If no key and algorithm !== 'no' throw CryptMaker.EmptyKeyError
- *          Ключ, используемый для шифрования. Если ключа нет и алгоритм не 'no', выбросит CryptMaker.EmptyKeyError
+ *      Ключ, используемый для шифрования. Если ключа нет и алгоритм не 'no', выбросит CryptMaker.EmptyKeyError
  * @param {Boolean} [options.headerEncrypted=false] true if need encrypt header of false if need not.
- *          true если нужно шифровать заголовок, false если нет.
+ *      true если нужно шифровать заголовок, false если нет.
  * @throws {CryptMaker.EmptyKeyError}
  * @returns {CryptMaker} - Logger object. Объект логгера
  */
@@ -94,51 +94,74 @@ CryptMaker._crypto = require('crypto');
 /**
  * Encrypt string.
  * Зашифровывает строку.
- * @param {String} message
- * @returns {String|null} If no message - return null. If algorithm == 'no' returns message.
- * Если нет message - возвращает null. Если algorithm == 'no' возвращает message.
+ * @param {String} string
+ * @returns {String|null} If no string - return null. If algorithm == 'no' returns string.
+ * Если нет string - возвращает null. Если algorithm == 'no' возвращает string.
  */
-CryptMaker.prototype.encrypt = function(message){
-  if (!message) return null;
-  if (this.algorithm === 'no') return message;
+CryptMaker.prototype.encrypt = function(string){
+  if (!string) return null;
+  if (this.algorithm === 'no') return string;
   var cipher = CryptMaker._crypto.createCipher(this.algorithm, this.key);
-  return cipher.update(message, 'utf8', 'hex') + cipher.final('hex');
+  return cipher.update(string, 'utf8', 'hex') + cipher.final('hex');
 };
 
 /**
  * Decrypt string.
  * Расшифровывает строку.
- * @param {String} message
- * @returns {String|null} If no message - return null. If algorithm == 'no' returns message.
- * Если нет message - возвращает null. Если algorithm == 'no' возвращает message.
+ * @param {String} string
+ * @returns {String|null} If no string - return null. If algorithm == 'no' returns string.
+ * Если нет string - возвращает null. Если algorithm == 'no' возвращает string.
  */
-CryptMaker.prototype.decrypt = function(message){
-  if (!message) return null;
-  if (this.algorithm === 'no') return message;
+CryptMaker.prototype.decrypt = function(string){
+  if (!string) return null;
+  if (this.algorithm === 'no') return string;
   var decipher = CryptMaker._crypto.createDecipher(this.algorithm, this.key);
-  return decipher.update(message, 'hex', 'utf8') + decipher.final('utf8');
+  return decipher.update(string, 'hex', 'utf8') + decipher.final('utf8');
 };
 
 /**
  * Parse JSON from string.
- * Парсит JSON из строки.
- * @param {String} data
- * @returns {Object}
+ *      Парсит JSON из строки.
+ * @param {String} messagePart
+ * @private
+ * @returns {Object|null} If no message part or can't parse message - return null. Else return message object.
+ *      Если нет части сообщения или его не получается распарсить - возвращает null.
+ *      Иначе возвращает объект части сообщения.
  */
-CryptMaker.prototype.parse = function(data){
-  if (!data) return null;
+CryptMaker.prototype._parseMessagePart = function(messagePart){
+  if (!messagePart) return null;
   try{
-    data = JSON.parse(data);
+    var part = JSON.parse(messagePart);
   }
   catch (e){
     return null;
   }
-  return data;
+  return part;
+};
+
+/**
+ * Parse JSON from string.
+ *      Парсит JSON из строки.
+ * @param {String} message
+ * @deprecated
+ * @returns {Object|null} If no message or can't parse message - return null. Else return message object.
+ *      Если нет сообщения или сообщение не получается распарсить - возвращает null.
+ *      Иначе возвращает объект сообщения.
+ */
+CryptMaker.prototype.parse = function(message){
+  if (!message) return null;
+  try{
+    var mes = JSON.parse(message);
+  }
+  catch (e){
+    return null;
+  }
+  return mes;
 };
 
 /**
  * Make string from JSON.
- * Возвращает JSON-строку.
+ *      Возвращает JSON-строку.
  * @param {Object} data
  * @private
  * @returns {String}
@@ -149,30 +172,35 @@ CryptMaker.prototype._format = function(data){
 
 /**
  * Make string from JSON.
- * Возвращает JSON-строку.
+ *      Возвращает JSON-строку.
  * @param {Object} data
  * @deprecated
  * @returns {String}
  */
-CryptMaker.prototype.format = CryptMaker.prototype._format;
+CryptMaker.prototype.format = function(data){
+  return JSON.stringify(data);
+};
 
 /**
- * get header from encrypted message.
- * @param {String} message - encrypted message.
- * @returns {Object|null} if can\t parse message - return null. Else return header Object
+ * Get header from encrypted message.
+ *      Возвращает заголовок сообщения.
+ * @param {String} message Encrypted message.
+ *      Зашифрованное сообщение.
+ * @returns {Object|null} If can't parse message - return null. Else return header Object.
+ *      Если не получается распарсить сообщение - возвращает null. Иначе - объект заголовка.
  */
 CryptMaker.prototype.getHeader = function(message){
   if (typeof message === 'undefined' || message.length == 0) return null;
   if (message.indexOf(this.sop) === -1) return null;
-  if (this.headerEncrypted) return this.parse(this.decrypt(message.split(this.sop)[0]));
-  return this.parse(message.split(this.sop)[0]);
+  if (this.headerEncrypted) return this._parseMessagePart(this.decrypt(message.split(this.sop)[0]));
+  return this._parseMessagePart(message.split(this.sop)[0]);
 };
 
 /**
- * get header from encrypted message.
- * @param {String} message - encrypted message.
+ * Get header from encrypted message.
+ * @param {String} message Encrypted message.
  * @param {Function} callback
- * @returns {Object|null} if can\t parse message - return null. else return header Object
+ * @returns {Object|null} If can't parse message - return null. else return header Object
  * @deprecated
  */
 CryptMaker.prototype.getHeaderAsync = function(message, callback){
@@ -190,7 +218,7 @@ CryptMaker.prototype.getHeaderAsync = function(message, callback){
     }
     setImmediate(function(){
       try {
-        header = this.parse(header);
+        header = this._parseMessagePart(header);
       }
       catch (e){return callback(e)}
       return setImmediate(function(){return callback(null, header);});
@@ -199,15 +227,18 @@ CryptMaker.prototype.getHeaderAsync = function(message, callback){
 };
 
 /**
- * get body from encrypted message.
- * @param {String} message - encrypted message.
- * @returns {Object|null} if can\t parse message - return null. else return body Object
+ * Get body from encrypted message.
+ *      Возвращает тело зашифрованного сообщения.
+ * @param {String} message Encrypted message.
+ *      Зашифрованное сообщение.
+ * @returns {Object|null} If can't parse message - return null. Else return body Object.
+ *      Если не получается распарсить сообщение - возвращает null. Иначе возвращает объект тела сообщения.
  */
 CryptMaker.prototype.getBody = function(message){
   if (typeof message === 'undefined' || message.length == 0) return null;
   message = message.replace(this.eomRE, '');
   if (message.indexOf(this.sop) === -1) return null;
-  return this.parse(this.decrypt(message.split(this.sop)[1]));
+  return this._parseMessagePart(this.decrypt(message.split(this.sop)[1]));
 };
 
 /**
@@ -231,7 +262,7 @@ CryptMaker.prototype.getBodyAsync = function(message, callback){
     body = this.decrypt(body);
     setImmediate(function(){
       try {
-        body = this.parse(body);
+        body = this._parseMessagePart(body);
       }
       catch (e){return callback(e)}
       return setImmediate(function(){return callback(null, body);});
@@ -241,9 +272,19 @@ CryptMaker.prototype.getBodyAsync = function(message, callback){
 
 /**
  * Make encrypt message.
- * @param {Object} message
- * @param {Object|string} message.header
- * @param {Object|string} [body]
+ *      Создает зашифрованное сообщение.
+ * @param {Object} message Message object. If body is defined - message param should be just header of message.
+ *      Объект сообщения. Если передается параметр body - данный параметр должен быть заголовком.
+ * @param {Object} [message.header] Message header.
+ *      Заголовок сообщения.
+ * @param {Object} [message.body] Message body.
+ *      Тело сообщения.
+ * @param {Object} [body] Message body.
+ *      Тело сообщения.
+ *
+ *     @example
+ *     cm.makeMessage({header: {some: "header"}, body: {awesome: "body"}});
+ *     cm.makeMessage({some: "header"}, {awesome: "body"}); //this calls are same
  * @returns {String} encrypted message.
  */
 CryptMaker.prototype.makeMessage = function(message, body){
@@ -274,9 +315,12 @@ CryptMaker.prototype.makeMessageAsync = function(message,callback){
 };
 
 /**
- * Decrypt massage
- * @param {String} message
- * @returns {Object}
+ * Decrypt message and return message object.
+ *      Расшифровывает сообщение и возвращает его объект.
+ * @param {String} message Message.
+ *      Сообщение.
+ * @returns {Object|null} If can't parse message returns null.
+ *      Если сообщение не получается распарсить - возвращает null.
  */
 CryptMaker.prototype.parseMessage = function(message){
   if (!message) return null;
@@ -284,23 +328,27 @@ CryptMaker.prototype.parseMessage = function(message){
   message = message.replace(this.eomRE, '');
   var array = message.split(this.sop);
   var json = {};
-  if (this.headerEncrypted) json.header = this.parse(this.decrypt(array[0]));
-  else json.header = this.parse(array[0]);
-  json.body = this.parse(this.decrypt(array[1]));
+  if (this.headerEncrypted) json.header = this._parseMessagePart(this.decrypt(array[0]));
+  else json.header = this._parseMessagePart(array[0]);
+  json.body = this._parseMessagePart(this.decrypt(array[1]));
   return json;
 };
 
 /**
- * Splits many messages to array.
- * @param {String} raw - messages.
- * @returns {String[]} return [] if no EOM at the end of raw string.
+ * Splits many messages at raw string to array.
+ *      Разделяет строку с сообщениями на массив сообщений.
+ * @param {String} raw Raw string with messages.
+ *      Строка с сообщениями.
+ * @returns {String[]} Return empty array if no EOM at the end of raw string.
+ *      Возвращает пустой массив, если в конце строки нет символа конца сообщения.
  */
 CryptMaker.prototype.splitMessages = function(raw){
+  if (!raw.match(this.eomRE)) return [];
   var array = raw.split(this.eom);
   if (array.length && array.pop().length) return [];
-  for (var i = 0; i < array.length; i++){
-    array[i] = this.addEom(array[i]);
-  }
+  //for (var i = 0; i < array.length; i++){
+  //  array[i] = this._addEom(array[i]);
+  //}
   return array;
 };
 
@@ -316,20 +364,56 @@ CryptMaker.prototype.splitMessagesAsync = function(raw, callback){
   setImmediate(function(){
     if (array.length && array.pop().length) return [];
     for (var i = 0; i < array.length; i++){
-      array[i] = this.addEom(array[i]);
+      array[i] = this._addEom(array[i]);
     }
     return callback(null, array);
   }.bind(this));
 };
 
+/**
+ * Add EOM symbol to string.
+ *      Добавляет символ конца сообщения к строке.
+ * @param {String} string
+ * @returns {String}
+ * @private
+ */
+CryptMaker.prototype._addEom = function(string){
+  return string+this.eom;
+};
+
+/**
+ * Add EOM symbol to string.
+ *      Добавляет символ конца сообщения к строке.
+ * @param {String} string
+ * @returns {String}
+ * @deprecated
+ */
 CryptMaker.prototype.addEom = function(string){
   return string+this.eom;
 };
 
-CryptMaker.prototype.createCryptMaker = function(opt){
-  return new CryptMaker(opt);
+/**
+ * Alternative constructor (without new, just call)
+ *      Альтернативный конструктор, без использования new.
+ * @param options
+ * @static
+ * @returns {CryptMaker}
+ */
+CryptMaker.createCryptMaker = function(options){
+  return new CryptMaker(options);
 };
 
+
+/**
+ * Replace header of message to new.
+ *      Замена заголовка сообщения.
+ * @param {Object} header New message header.
+ *      Новый заголовок сообщения.
+ * @param {String} message Message to replace header.
+ *      Сообщение, в котором необходимо изменить заголовок.
+ * @returns {String} Encrypted message with new header.
+ *      Зашифрованное сообщение с новым заголовком.
+ */
 CryptMaker.prototype.replaceHeader = function(header, message){
   if (!message) return null;
   if (message.indexOf(this.sop) == -1) return null;
