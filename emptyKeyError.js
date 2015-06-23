@@ -50,7 +50,7 @@ function EmptyKeyError(algorithm){
 }
 
 (function(){
-  require('util').inherit(EmptyKeyError, Error);
+  require('util').inherits(EmptyKeyError, Error);
 })();
 
 /**

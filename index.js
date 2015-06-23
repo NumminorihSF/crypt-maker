@@ -50,12 +50,13 @@
  * @returns {CryptMaker} - Logger object. Объект логгера
  */
 function CryptMaker (options){
+  options = options || {};
   this.eom = options.EOM || CryptMaker._EOM;
   this.eomRE = new RegExp(this.eom+'$');
   this.sop = options.SOP || CryptMaker._SOP;
   this.algorithm = options.algorithm || CryptMaker._algorithm;
-  this.key = options.key;
-  if (this.algorithm !== 'no' && !this.key) throw require(__dirname+'/emptyKeyError.js')(this.algorithm);
+  this.key = String(options.key);
+  if (this.algorithm !== 'no' && !this.key) throw new (require(__dirname+'/emptyKeyError.js'))(this.algorithm);
   this.headerEncrypted = Boolean(options.headerEncrypted) || false;
 }
 
@@ -288,11 +289,13 @@ CryptMaker.prototype.getBodyAsync = function(message, callback){
  * @returns {String} encrypted message.
  */
 CryptMaker.prototype.makeMessage = function(message, body){
-  if (body) message = {header: message, body: body};
-  if (this.headerEncrypted) message.header = this.encrypt(this._format(message.header));
-  else message.header = this._format(message.header);
-  message.body = this.encrypt(this._format(message.body));
-  return message.header+this.sop+message.body+this.eom;
+  var mes = {};
+  if (body) var m = {header: message, body: body};
+  else m = message;
+  if (this.headerEncrypted) mes.header = this.encrypt(this._format(m.header));
+  else mes.header = this._format(m.header);
+  mes.body = this.encrypt(this._format(m.body));
+  return mes.header+this.sop+mes.body+this.eom;
 };
 
 /**
