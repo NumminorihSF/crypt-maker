@@ -31,7 +31,7 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p>Use node.js or io.js crypt api for make encrypted messages. Works sync.</p>
+        <p>Use node.js crypt api for make encrypted messages. Works sync. For async crypt-maker - see crypt-maker-async.</p>
 
 <p>Install with:</p>
 
@@ -86,7 +86,7 @@
 <li><code>CM.createCryptMaker({key: '123'}) = crypt.createCryptMaker({key: '123', algorithm:'aes123', EOM:'\r\n\r\n', SOP:'\r\n'})</code></li>
 </ul>
 
-<p>If <code>algorithm !== 'no'</code> and no key passed to constructor - throws error</p>
+<p>If <code>algorithm !== 'no'</code> and no key passed to constructor - throws error (EmptyKeyError)</p>
 
 <ul>
 <li>
@@ -106,9 +106,9 @@
 </ul>
 
 <h2>
-<a id="cmdecryptmessage" class="anchor" href="#cmdecryptmessage" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.decrypt(message)</h2>
+<a id="cmdecryptstr" class="anchor" href="#cmdecryptstr" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.decrypt(str)</h2>
 
-<p>Return decrypted string. If <code>algorithm == 'no'</code> returns <code>message</code>.</p>
+<p>Return decrypted string. If <code>algorithm == 'no'</code> returns <code>str</code>.</p>
 
 <p>Parameters:</p>
 
@@ -122,17 +122,17 @@
 </thead>
 <tbody>
 <tr>
-<td><code>message</code></td>
-<td>string</td>
-<td></td>
+<td><code>str</code></td>
+<td>String</td>
+<td>string to decrypt</td>
 </tr>
 </tbody>
 </table>
 
 <h2>
-<a id="cmencryptmessage" class="anchor" href="#cmencryptmessage" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.encrypt(message)</h2>
+<a id="cmencryptstr" class="anchor" href="#cmencryptstr" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.encrypt(str)</h2>
 
-<p>Return encrypted string. If <code>algorithm == 'no'</code> returns <code>message</code>.</p>
+<p>Return encrypted string. If <code>algorithm == 'no'</code> returns <code>str</code>.</p>
 
 <p>Parameters:</p>
 
@@ -146,17 +146,17 @@
 </thead>
 <tbody>
 <tr>
-<td><code>message</code></td>
-<td>string</td>
-<td></td>
+<td><code>str</code></td>
+<td>String</td>
+<td>string to encrypt</td>
 </tr>
 </tbody>
 </table>
 
 <h2>
-<a id="cmformatdata" class="anchor" href="#cmformatdata" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.format(data)</h2>
+<a id="cmformatmessagepart-deprecated" class="anchor" href="#cmformatmessagepart-deprecated" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.format(messagePart) Deprecated</h2>
 
-<p>Make string from JSON</p>
+<p>Make string from JSON with message part.</p>
 
 <p>Parameters:</p>
 
@@ -170,7 +170,7 @@
 </thead>
 <tbody>
 <tr>
-<td><code>data</code></td>
+<td><code>messagePart</code></td>
 <td>any, except function</td>
 <td></td>
 </tr>
@@ -178,9 +178,9 @@
 </table>
 
 <h2>
-<a id="cmparsedata" class="anchor" href="#cmparsedata" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.parse(data)</h2>
+<a id="cmparsemessagepart-deprecated" class="anchor" href="#cmparsemessagepart-deprecated" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.parse(messagePart) Deprecated</h2>
 
-<p>Unformat message back to Object | Boolean | String | Number</p>
+<p>Unformat message part back to Object | Boolean | String | Number.</p>
 
 <p>Parameters:</p>
 
@@ -194,8 +194,8 @@
 </thead>
 <tbody>
 <tr>
-<td>data</td>
-<td>string</td>
+<td><code>messagePart</code></td>
+<td>String</td>
 <td></td>
 </tr>
 </tbody>
@@ -219,15 +219,15 @@ or no SOP at message, returns <code>null</code>. Else if can't parse message - r
 </thead>
 <tbody>
 <tr>
-<td>message</td>
-<td>string</td>
+<td><code>message</code></td>
+<td>String</td>
 <td>encrypted message</td>
 </tr>
 </tbody>
 </table>
 
 <h2>
-<a id="cmgetbodyasyncmessage-callback" class="anchor" href="#cmgetbodyasyncmessage-callback" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.getBodyAsync(message, callback)</h2>
+<a id="cmgetbodyasyncmessage-callback-deprecated" class="anchor" href="#cmgetbodyasyncmessage-callback-deprecated" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.getBodyAsync(message, callback) Deprecated</h2>
 
 <p>Same as sync version. But doesn't return <code>null</code>, and returns error objects.
 <strong>Is not realy async!</strong></p>
@@ -244,13 +244,13 @@ or no SOP at message, returns <code>null</code>. Else if can't parse message - r
 </thead>
 <tbody>
 <tr>
-<td>message</td>
-<td>string</td>
+<td><code>message</code></td>
+<td>String</td>
 <td>encrypted message</td>
 </tr>
 <tr>
-<td>callback</td>
-<td>function</td>
+<td><code>callback</code></td>
+<td>Function</td>
 <td></td>
 </tr>
 </tbody>
@@ -274,18 +274,18 @@ or no SOP at message, returns <code>null</code>. Else if can't parse message - r
 </thead>
 <tbody>
 <tr>
-<td>message</td>
-<td>string</td>
+<td><code>message</code></td>
+<td>String</td>
 <td>encrypted message</td>
 </tr>
 </tbody>
 </table>
 
 <h2>
-<a id="cmgetheaderasyncmessage-callback" class="anchor" href="#cmgetheaderasyncmessage-callback" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.getHeaderAsync(message, callback)</h2>
+<a id="cmgetheaderasyncmessage-callback-deprecated" class="anchor" href="#cmgetheaderasyncmessage-callback-deprecated" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.getHeaderAsync(message, callback) Deprecated</h2>
 
 <p>Same as sync version. But doesn't return <code>null</code>, and returns error objects.
-<strong>Is not realy async!</strong></p>
+<strong>Is not really async!</strong></p>
 
 <p>Parameters:</p>
 
@@ -299,22 +299,22 @@ or no SOP at message, returns <code>null</code>. Else if can't parse message - r
 </thead>
 <tbody>
 <tr>
-<td>message</td>
-<td>string</td>
+<td><code>message</code></td>
+<td>String</td>
 <td>encrypted message</td>
 </tr>
 <tr>
-<td>callback</td>
-<td>function</td>
+<td><code>callback</code></td>
+<td>Function</td>
 <td></td>
 </tr>
 </tbody>
 </table>
 
 <h2>
-<a id="cmmakemessagemessage" class="anchor" href="#cmmakemessagemessage" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.makeMessage(message)</h2>
+<a id="cmmakemessagemessage-body" class="anchor" href="#cmmakemessagemessage-body" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.makeMessage(message[, body])</h2>
 
-<p>Make encrypt message form object.</p>
+<p>Make encrypt message form object. If body is defined - message should be header of message.</p>
 
 <p>Parameters:</p>
 
@@ -328,28 +328,33 @@ or no SOP at message, returns <code>null</code>. Else if can't parse message - r
 </thead>
 <tbody>
 <tr>
-<td>message</td>
+<td><code>message</code></td>
 <td>Object</td>
-<td>Properties</td>
+<td>Message object. If <code>body</code> is not defined - should be header object.</td>
 </tr>
 <tr>
-<td>message.header</td>
-<td>Object, string</td>
-<td></td>
+<td><code>message.header</code></td>
+<td>Object</td>
+<td>Header of message. Only if <code>body</code> parameter is not defined.</td>
 </tr>
 <tr>
-<td>message.body</td>
-<td>Object, string</td>
-<td></td>
+<td><code>message.body</code></td>
+<td>Object</td>
+<td>Body of message. Only if <code>body</code> parameter is not defined.</td>
+</tr>
+<tr>
+<td><code>body</code></td>
+<td>Object</td>
+<td>Optional. If defined - body of message.</td>
 </tr>
 </tbody>
 </table>
 
 <h2>
-<a id="cmmakemessageasyncmessage-callback" class="anchor" href="#cmmakemessageasyncmessage-callback" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.makeMessageAsync(message, callback)</h2>
+<a id="cmmakemessageasyncmessage-callback-deprecated" class="anchor" href="#cmmakemessageasyncmessage-callback-deprecated" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.makeMessageAsync(message, callback) Deprecated</h2>
 
 <p>Same as sync version. But doesn't return <code>null</code>, and returns error objects.
-<strong>Is not realy async!</strong></p>
+<strong>Is not really async!</strong></p>
 
 <p>Parameters:</p>
 
@@ -363,24 +368,24 @@ or no SOP at message, returns <code>null</code>. Else if can't parse message - r
 </thead>
 <tbody>
 <tr>
-<td>message</td>
+<td><code>message</code></td>
 <td>Object</td>
-<td>Properties</td>
+<td>Message object.</td>
 </tr>
 <tr>
-<td>message.header</td>
-<td>Object, string</td>
-<td></td>
+<td><code>message.header</code></td>
+<td>Object</td>
+<td>Header of message.</td>
 </tr>
 <tr>
-<td>message.body</td>
-<td>Object, string</td>
-<td></td>
+<td><code>message.body</code></td>
+<td>Object</td>
+<td>Body of message.</td>
 </tr>
 <tr>
-<td>callback</td>
-<td>function</td>
-<td></td>
+<td><code>callback</code></td>
+<td>Function</td>
+<td>Callback function.</td>
 </tr>
 </tbody>
 </table>
@@ -388,7 +393,7 @@ or no SOP at message, returns <code>null</code>. Else if can't parse message - r
 <h2>
 <a id="cmparsemessagemessage" class="anchor" href="#cmparsemessagemessage" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.parseMessage(message)</h2>
 
-<p>Decrypt message form object. Returns Object <code>{header: ... , body: ... }</code></p>
+<p>Decrypt message form object. Returns Object like <code>{header: ... , body: ... }</code></p>
 
 <p>Parameters:</p>
 
@@ -402,8 +407,8 @@ or no SOP at message, returns <code>null</code>. Else if can't parse message - r
 </thead>
 <tbody>
 <tr>
-<td>message</td>
-<td>string</td>
+<td><code>message</code></td>
+<td>String</td>
 <td></td>
 </tr>
 </tbody>
@@ -427,7 +432,7 @@ or no SOP at message, returns <code>null</code>. Else if can't parse message - r
 <tbody>
 <tr>
 <td>raw</td>
-<td>string</td>
+<td>String</td>
 <td>raw messages string</td>
 </tr>
 </tbody>
@@ -437,7 +442,7 @@ or no SOP at message, returns <code>null</code>. Else if can't parse message - r
 return <code>[]</code> if no EOMs at the end of raw strings</p>
 
 <h2>
-<a id="cmsplitmessagesasyncraw" class="anchor" href="#cmsplitmessagesasyncraw" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.splitMessagesAsync(raw)</h2>
+<a id="cmsplitmessagesasyncraw-deprecated" class="anchor" href="#cmsplitmessagesasyncraw-deprecated" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.splitMessagesAsync(raw) Deprecated</h2>
 
 <p>Splits many messages to array.</p>
 
@@ -454,12 +459,12 @@ return <code>[]</code> if no EOMs at the end of raw strings</p>
 <tbody>
 <tr>
 <td>raw</td>
-<td>string</td>
+<td>String</td>
 <td>messages</td>
 </tr>
 <tr>
 <td>callback</td>
-<td>function</td>
+<td>Function</td>
 <td></td>
 </tr>
 </tbody>
@@ -469,7 +474,7 @@ return <code>[]</code> if no EOMs at the end of raw strings</p>
 return <code>[]</code> if no EOMs at the end of raw strings</p>
 
 <h2>
-<a id="cmaddeomstring" class="anchor" href="#cmaddeomstring" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.addEom(string)</h2>
+<a id="cmaddeomstring-deprecated" class="anchor" href="#cmaddeomstring-deprecated" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.addEom(string) Deprecated</h2>
 
 <p>Splits many messages to array.</p>
 
@@ -486,7 +491,7 @@ return <code>[]</code> if no EOMs at the end of raw strings</p>
 <tbody>
 <tr>
 <td>string</td>
-<td>string</td>
+<td>String</td>
 <td>one encrypted message</td>
 </tr>
 </tbody>
