@@ -31,7 +31,8 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p>Use node.js crypt api for make encrypted messages. Works sync. For async crypt-maker - see crypt-maker-async.</p>
+        <p>Use node.js crypt api for make encrypted messages. Works sync.
+<a href="http://numminorihsf.github.io/crypt-maker/jsduck">Class documentation by jsDuck</a></p>
 
 <p>Install with:</p>
 
@@ -431,7 +432,7 @@ or no SOP at message, returns <code>null</code>. Else if can't parse message - r
 </thead>
 <tbody>
 <tr>
-<td>raw</td>
+<td><code>raw</code></td>
 <td>String</td>
 <td>raw messages string</td>
 </tr>
@@ -458,12 +459,12 @@ return <code>[]</code> if no EOMs at the end of raw strings</p>
 </thead>
 <tbody>
 <tr>
-<td>raw</td>
+<td><code>raw</code></td>
 <td>String</td>
 <td>messages</td>
 </tr>
 <tr>
-<td>callback</td>
+<td><code>callback</code></td>
 <td>Function</td>
 <td></td>
 </tr>
@@ -490,7 +491,7 @@ return <code>[]</code> if no EOMs at the end of raw strings</p>
 </thead>
 <tbody>
 <tr>
-<td>string</td>
+<td><code>string</code></td>
 <td>String</td>
 <td>one encrypted message</td>
 </tr>
@@ -499,6 +500,38 @@ return <code>[]</code> if no EOMs at the end of raw strings</p>
 
 <p>Returns:
 return string+EOM symbol.</p>
+
+<h2>
+<a id="cmreplaceheaderheader-message" class="anchor" href="#cmreplaceheaderheader-message" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.replaceHeader(header, message)</h2>
+
+<p>Replace header of message to new.</p>
+
+<p>Parameters:</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>header</code></td>
+<td>Object</td>
+<td>new header for message</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td>String</td>
+<td>encrypted message</td>
+</tr>
+</tbody>
+</table>
+
+<p>Returns:
+return message with new header.</p>
 
 <h1>
 <a id="license---mit-license" class="anchor" href="#license---mit-license" aria-hidden="true"><span class="octicon octicon-link"></span></a>LICENSE - "MIT License"</h1>
