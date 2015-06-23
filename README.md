@@ -3,6 +3,7 @@
 
 Use node.js crypt api for make encrypted messages. Works sync.
 
+[Class documentation by jsDuck](http://numminorihsf.github.io/crypt-maker/jsduck)
 
 Install with:
 
