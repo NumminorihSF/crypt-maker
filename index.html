@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Crypt-maker by NumminorihSF</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Crypt-maker</h1>
+      <h2 class="project-tagline">Make encrypted message and decrypt them by node.js or io.js crypto module</h2>
+      <a href="https://github.com/NumminorihSF/crypt-maker" class="btn">View on GitHub</a>
+      <a href="https://github.com/NumminorihSF/crypt-maker/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/NumminorihSF/crypt-maker/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <p>Use node.js or io.js crypt api for make encrypted messages. Works sync.</p>
+
+<p>Install with:</p>
+
+<pre><code>npm install crypt-maker
+</code></pre>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>Simple example:</p>
+
+<div class="highlight highlight-js"><pre>
+    <span class="pl-k">var</span> <span class="pl-c1">CM</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">"</span>crypt-maker<span class="pl-pds">"</span></span>);
+    <span class="pl-k">var</span> crypt <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">CM</span>({key<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>some-crypt-key<span class="pl-pds">'</span></span>});
+
+    <span class="pl-k">var</span> messageJSON <span class="pl-k">=</span> {
+        header<span class="pl-k">:</span> {
+            some<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>header<span class="pl-pds">'</span></span>,
+            another<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>awesome header<span class="pl-pds">'</span></span>
+        },
+        body<span class="pl-k">:</span> {
+            time<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>11:22<span class="pl-pds">'</span></span>,
+            whisp<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>do this<span class="pl-pds">'</span></span> 
+        }
+    };
+
+    <span class="pl-k">var</span> encrypted <span class="pl-k">=</span> crypt.makeMessage(messageJSON);
+
+    <span class="pl-en">console</span><span class="pl-c1">.log</span>(encrypted);
+    <span class="pl-c">//{"some":"header","another":"awesome header"}</span>
+    <span class="pl-c">//a4d355b6522d3d69baca7ff06310f24c992b0fa83ca6ae43e0f7e83340a001e618af6e48e1fb9fca63181acc8162f520</span>
+
+    <span class="pl-k">var</span> decrypted <span class="pl-k">=</span> {header<span class="pl-k">:</span> crypt.getHeader(encrypted), body<span class="pl-k">:</span> crypt.getBody(encrypted)};
+    <span class="pl-en">console</span><span class="pl-c1">.log</span>(decrypted);
+    <span class="pl-c">//{ header: { some: 'header', another: 'awesome header' },</span>
+    <span class="pl-c">//  body: { time: '11:22', whisp: 'do this' } }</span>
+    <span class="pl-k">var</span> decryptedAll <span class="pl-k">=</span> crypt.parseMessage(encrypted);
+    <span class="pl-en">console</span><span class="pl-c1">.log</span>(decryptedAll);</pre></div>
+
+<h1>
+<a id="methods" class="anchor" href="#methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>Methods</h1>
+
+<h2>
+<a id="cmcreateclient" class="anchor" href="#cmcreateclient" aria-hidden="true"><span class="octicon octicon-link"></span></a>CM.createClient()</h2>
+
+<p>Is the same as:</p>
+
+<h2>
+<a id="new-cm" class="anchor" href="#new-cm" aria-hidden="true"><span class="octicon octicon-link"></span></a>new CM()</h2>
+
+<ul>
+<li><code>CM.createCryptMaker({key: '123'}) = crypt.createCryptMaker({key: '123', algorithm:'aes123', EOM:'\r\n\r\n', SOP:'\r\n'})</code></li>
+</ul>
+
+<p>If <code>algorithm !== 'no'</code> and no key passed to constructor - throws error</p>
+
+<ul>
+<li>
+<code>key</code>: key to crypt strings</li>
+<li>
+<code>algorithm</code>: which algorithm use to encrypt messages. Default <code>aes128</code>
+</li>
+<li>
+<code>EOM</code>: which symbols indicate ends of messages. Default <code>\r\n\r\n</code>
+</li>
+<li>
+<code>SOP</code>: which symbols indicate separate between header and message. Default <code>\r\n</code>
+</li>
+<li>
+<code>headerEncrypted</code>: <code>true</code> if header should encrypted. Default <code>false</code>
+</li>
+</ul>
+
+<h2>
+<a id="cmdecryptmessage" class="anchor" href="#cmdecryptmessage" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.decrypt(message)</h2>
+
+<p>Return decrypted string. If <code>algorithm == 'no'</code> returns <code>message</code>.</p>
+
+<p>Parameters:</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>message</code></td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="cmencryptmessage" class="anchor" href="#cmencryptmessage" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.encrypt(message)</h2>
+
+<p>Return encrypted string. If <code>algorithm == 'no'</code> returns <code>message</code>.</p>
+
+<p>Parameters:</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>message</code></td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="cmformatdata" class="anchor" href="#cmformatdata" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.format(data)</h2>
+
+<p>Make string from JSON</p>
+
+<p>Parameters:</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data</code></td>
+<td>any, except function</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="cmparsedata" class="anchor" href="#cmparsedata" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.parse(data)</h2>
+
+<p>Unformat message back to Object | Boolean | String | Number</p>
+
+<p>Parameters:</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>data</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="cmgetbodymessage" class="anchor" href="#cmgetbodymessage" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.getBody(message)</h2>
+
+<p>Get body from encrypted message. If <code>typeof message == undefined || message length == 0</code> 
+or no SOP at message, returns <code>null</code>. Else if can't parse message - return <code>null</code>.</p>
+
+<p>Parameters:</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>message</td>
+<td>string</td>
+<td>encrypted message</td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="cmgetbodyasyncmessage-callback" class="anchor" href="#cmgetbodyasyncmessage-callback" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.getBodyAsync(message, callback)</h2>
+
+<p>Same as sync version. But doesn't return <code>null</code>, and returns error objects.
+<strong>Is not realy async!</strong></p>
+
+<p>Parameters:</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>message</td>
+<td>string</td>
+<td>encrypted message</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>function</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="cmgetheadermessage" class="anchor" href="#cmgetheadermessage" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.getHeader(message)</h2>
+
+<p>Get header from encrypted message. If <code>typeof message == undefined || message.length == 0</code> 
+or no SOP at message, returns <code>null</code>. Else if can't parse message - return <code>null</code>.</p>
+
+<p>Parameters:</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>message</td>
+<td>string</td>
+<td>encrypted message</td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="cmgetheaderasyncmessage-callback" class="anchor" href="#cmgetheaderasyncmessage-callback" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.getHeaderAsync(message, callback)</h2>
+
+<p>Same as sync version. But doesn't return <code>null</code>, and returns error objects.
+<strong>Is not realy async!</strong></p>
+
+<p>Parameters:</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>message</td>
+<td>string</td>
+<td>encrypted message</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>function</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="cmmakemessagemessage" class="anchor" href="#cmmakemessagemessage" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.makeMessage(message)</h2>
+
+<p>Make encrypt message form object.</p>
+
+<p>Parameters:</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>message</td>
+<td>Object</td>
+<td>Properties</td>
+</tr>
+<tr>
+<td>message.header</td>
+<td>Object, string</td>
+<td></td>
+</tr>
+<tr>
+<td>message.body</td>
+<td>Object, string</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="cmmakemessageasyncmessage-callback" class="anchor" href="#cmmakemessageasyncmessage-callback" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.makeMessageAsync(message, callback)</h2>
+
+<p>Same as sync version. But doesn't return <code>null</code>, and returns error objects.
+<strong>Is not realy async!</strong></p>
+
+<p>Parameters:</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>message</td>
+<td>Object</td>
+<td>Properties</td>
+</tr>
+<tr>
+<td>message.header</td>
+<td>Object, string</td>
+<td></td>
+</tr>
+<tr>
+<td>message.body</td>
+<td>Object, string</td>
+<td></td>
+</tr>
+<tr>
+<td>callback</td>
+<td>function</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="cmparsemessagemessage" class="anchor" href="#cmparsemessagemessage" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.parseMessage(message)</h2>
+
+<p>Decrypt message form object. Returns Object <code>{header: ... , body: ... }</code></p>
+
+<p>Parameters:</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>message</td>
+<td>string</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="cmsplitmessagesraw" class="anchor" href="#cmsplitmessagesraw" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.splitMessages(raw)</h2>
+
+<p>Splits many messages to array of messages.</p>
+
+<p>Parameters:</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>raw</td>
+<td>string</td>
+<td>raw messages string</td>
+</tr>
+</tbody>
+</table>
+
+<p>Returns:
+return <code>[]</code> if no EOMs at the end of raw strings</p>
+
+<h2>
+<a id="cmsplitmessagesasyncraw" class="anchor" href="#cmsplitmessagesasyncraw" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.splitMessagesAsync(raw)</h2>
+
+<p>Splits many messages to array.</p>
+
+<p>Parameters:</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>raw</td>
+<td>string</td>
+<td>messages</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>function</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<p>Returns:
+return <code>[]</code> if no EOMs at the end of raw strings</p>
+
+<h2>
+<a id="cmaddeomstring" class="anchor" href="#cmaddeomstring" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.addEom(string)</h2>
+
+<p>Splits many messages to array.</p>
+
+<p>Parameters:</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>string</td>
+<td>string</td>
+<td>one encrypted message</td>
+</tr>
+</tbody>
+</table>
+
+<p>Returns:
+return string+EOM symbol.</p>
+
+<h1>
+<a id="license---mit-license" class="anchor" href="#license---mit-license" aria-hidden="true"><span class="octicon octicon-link"></span></a>LICENSE - "MIT License"</h1>
+
+<p>Copyright (c) 2015 Konstantine Petryaev</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/NumminorihSF/crypt-maker">Crypt-maker</a> is maintained by <a href="https://github.com/NumminorihSF">NumminorihSF</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
