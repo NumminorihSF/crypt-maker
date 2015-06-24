@@ -49,7 +49,7 @@ Simple example:
 
 # Methods
 
-## CM.createClient()
+## CM.createCryptMaker()
 
 Is the same as:
 
@@ -215,7 +215,7 @@ Returns:
 return `[]` if no EOMs at the end of raw strings
 
 
-## cm.splitMessagesAsync(raw) Deprecated
+## cm.splitMessagesAsync(raw, callback) Deprecated
 
 Splits many messages to array.
 
@@ -237,7 +237,7 @@ Parameters:
 
 Name 	   | Type   | 	Description
 ---------|--------|---------------
-`string` 	 |String  | 	one encrypted message
+`string` |String  | 	one encrypted message
 	
 
 Returns:
