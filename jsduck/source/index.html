@@ -67,19 +67,20 @@
  * @returns {CryptMaker} - Logger object. Объект логгера
  */
 function CryptMaker (options){
+  options = options || {};
   this.eom = options.EOM || CryptMaker._EOM;
   this.eomRE = new RegExp(this.eom+&#39;$&#39;);
   this.sop = options.SOP || CryptMaker._SOP;
   this.algorithm = options.algorithm || CryptMaker._algorithm;
-  this.key = options.key;
-  if (this.algorithm !== &#39;no&#39; &amp;&amp; !this.key) throw require(__dirname+&#39;/emptyKeyError.js&#39;)(this.algorithm);
+  this.key = String(options.key);
+  if (this.algorithm !== &#39;no&#39; &amp;&amp; !this.key) throw new (require(__dirname+&#39;/emptyKeyError.js&#39;))(this.algorithm);
   this.headerEncrypted = Boolean(options.headerEncrypted) || false;
 }
 
 
 <span id='CryptMaker-static-property-_SOP'>/**
 </span> * Default separator of message parts
- * Разделитель между частими сообщения по умолчанию
+ *      Разделитель между частими сообщения по умолчанию
  * @static
  * @private
  * @type {String}
@@ -89,7 +90,7 @@ CryptMaker._SOP = &#39;\r\n&#39;;
 
 <span id='CryptMaker-static-property-_EOM'>/**
 </span> * Default separator of messages
- * Разделитель между сообщеними по умолчанию
+ *      Разделитель между сообщеними по умолчанию
  * @static
  * @private
  * @type {String}
@@ -98,7 +99,7 @@ CryptMaker._EOM = &#39;\r\n\r\n&#39;;
 
 <span id='CryptMaker-static-property-_algorithm'>/**
 </span> * Default algorithm of encryption.
- * Алгоритм шифрования по умолчанию
+ *      Алгоритм шифрования по умолчанию
  * @static
  * @private
  * @type {String}
@@ -110,10 +111,10 @@ CryptMaker._crypto = require(&#39;crypto&#39;);
 
 <span id='CryptMaker-method-encrypt'>/**
 </span> * Encrypt string.
- * Зашифровывает строку.
+ *      Зашифровывает строку.
  * @param {String} string
  * @returns {String|null} If no string - return null. If algorithm == &#39;no&#39; returns string.
- * Если нет string - возвращает null. Если algorithm == &#39;no&#39; возвращает string.
+ *      Если нет string - возвращает null. Если algorithm == &#39;no&#39; возвращает string.
  */
 CryptMaker.prototype.encrypt = function(string){
   if (!string) return null;
@@ -124,10 +125,10 @@ CryptMaker.prototype.encrypt = function(string){
 
 <span id='CryptMaker-method-decrypt'>/**
 </span> * Decrypt string.
- * Расшифровывает строку.
+ *      Расшифровывает строку.
  * @param {String} string
  * @returns {String|null} If no string - return null. If algorithm == &#39;no&#39; returns string.
- * Если нет string - возвращает null. Если algorithm == &#39;no&#39; возвращает string.
+ *      Если нет string - возвращает null. Если algorithm == &#39;no&#39; возвращает string.
  */
 CryptMaker.prototype.decrypt = function(string){
   if (!string) return null;
@@ -305,11 +306,13 @@ CryptMaker.prototype.getBodyAsync = function(message, callback){
  * @returns {String} encrypted message.
  */
 CryptMaker.prototype.makeMessage = function(message, body){
-  if (body) message = {header: message, body: body};
-  if (this.headerEncrypted) message.header = this.encrypt(this._format(message.header));
-  else message.header = this._format(message.header);
-  message.body = this.encrypt(this._format(message.body));
-  return message.header+this.sop+message.body+this.eom;
+  var mes = {};
+  if (body) var m = {header: message, body: body};
+  else m = message;
+  if (this.headerEncrypted) mes.header = this.encrypt(this._format(m.header));
+  else mes.header = this._format(m.header);
+  mes.body = this.encrypt(this._format(m.body));
+  return mes.header+this.sop+mes.body+this.eom;
 };
 
 <span id='CryptMaker-method-makeMessageAsync'>/**
@@ -362,11 +365,22 @@ CryptMaker.prototype.parseMessage = function(message){
 CryptMaker.prototype.splitMessages = function(raw){
   if (!raw.match(this.eomRE)) return [];
   var array = raw.split(this.eom);
-  if (array.length &amp;&amp; array.pop().length) return [];
-  //for (var i = 0; i &lt; array.length; i++){
-  //  array[i] = this._addEom(array[i]);
-  //}
+  //if (!array.length) return [];
+  if (array.pop().length) return [];
   return array;
+};
+
+<span id='CryptMaker-method-splitMessagesForce'>/**
+</span> * Splits many massages at raw string to array. Last element is tail of raw string.
+ * If some message was not fully emitted - it will be this element. If all messages are entire it will be &#39;&#39;.
+ *      Разделяет строку с сообщениями на массив сообщений. Последний элемент - остаток строки.
+ *      Если какое-либо сообщение не доставленно полностью - оно будет этим элементом.
+ *      Если все сообщения целые - последний элемент - &#39;&#39;.
+ * @param {String} raw
+ * @returns {String[]}
+ */
+CryptMaker.prototype.splitMessagesForce = function(raw){
+  return raw.split(this.eom);
 };
 
 <span id='CryptMaker-method-splitMessagesAsync'>/**
@@ -388,24 +402,26 @@ CryptMaker.prototype.splitMessagesAsync = function(raw, callback){
 };
 
 <span id='CryptMaker-method-_addEom'>/**
-</span> * Add EOM symbol to string.
- *      Добавляет символ конца сообщения к строке.
+</span> * Add EOM symbol to string if there is not EOM at the end.
+ *      Добавляет символ конца сообщения к строке, если она не оканчивается им.
  * @param {String} string
  * @returns {String}
  * @private
  */
 CryptMaker.prototype._addEom = function(string){
+  if (string.match(this.eomRE)) return string;
   return string+this.eom;
 };
 
 <span id='CryptMaker-method-addEom'>/**
-</span> * Add EOM symbol to string.
- *      Добавляет символ конца сообщения к строке.
+</span> * Add EOM symbol to string if there is not EOM at the end.
+ *      Добавляет символ конца сообщения к строке, если она не оканчивается им.
  * @param {String} string
  * @returns {String}
  * @deprecated
  */
 CryptMaker.prototype.addEom = function(string){
+  if (string.match(this.eomRE)) return string;
   return string+this.eom;
 };
 
@@ -435,6 +451,7 @@ CryptMaker.prototype.replaceHeader = function(header, message){
   if (!message) return null;
   if (message.indexOf(this.sop) == -1) return null;
   var array = message.split(this.sop);
+  if (!array[1].match(this.eomRE)) array[1] += this.eom;
   array[0] = this.headerEncrypted?this.encrypt(JSON.stringify(header)):JSON.stringify(header);
   return array[0]+this.sop+array[1];
 };
