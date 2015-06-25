@@ -63,7 +63,7 @@ function CryptMaker (options){
 
 /**
  * Default separator of message parts
- * Разделитель между частими сообщения по умолчанию
+ *      Разделитель между частими сообщения по умолчанию
  * @static
  * @private
  * @type {String}
@@ -73,7 +73,7 @@ CryptMaker._SOP = '\r\n';
 
 /**
  * Default separator of messages
- * Разделитель между сообщеними по умолчанию
+ *      Разделитель между сообщеними по умолчанию
  * @static
  * @private
  * @type {String}
@@ -82,7 +82,7 @@ CryptMaker._EOM = '\r\n\r\n';
 
 /**
  * Default algorithm of encryption.
- * Алгоритм шифрования по умолчанию
+ *      Алгоритм шифрования по умолчанию
  * @static
  * @private
  * @type {String}
@@ -94,10 +94,10 @@ CryptMaker._crypto = require('crypto');
 
 /**
  * Encrypt string.
- * Зашифровывает строку.
+ *      Зашифровывает строку.
  * @param {String} string
  * @returns {String|null} If no string - return null. If algorithm == 'no' returns string.
- * Если нет string - возвращает null. Если algorithm == 'no' возвращает string.
+ *      Если нет string - возвращает null. Если algorithm == 'no' возвращает string.
  */
 CryptMaker.prototype.encrypt = function(string){
   if (!string) return null;
@@ -108,10 +108,10 @@ CryptMaker.prototype.encrypt = function(string){
 
 /**
  * Decrypt string.
- * Расшифровывает строку.
+ *      Расшифровывает строку.
  * @param {String} string
  * @returns {String|null} If no string - return null. If algorithm == 'no' returns string.
- * Если нет string - возвращает null. Если algorithm == 'no' возвращает string.
+ *      Если нет string - возвращает null. Если algorithm == 'no' возвращает string.
  */
 CryptMaker.prototype.decrypt = function(string){
   if (!string) return null;
@@ -348,11 +348,22 @@ CryptMaker.prototype.parseMessage = function(message){
 CryptMaker.prototype.splitMessages = function(raw){
   if (!raw.match(this.eomRE)) return [];
   var array = raw.split(this.eom);
-  if (array.length && array.pop().length) return [];
-  //for (var i = 0; i < array.length; i++){
-  //  array[i] = this._addEom(array[i]);
-  //}
+  //if (!array.length) return [];
+  if (array.pop().length) return [];
   return array;
+};
+
+/**
+ * Splits many massages at raw string to array. Last element is tail of raw string.
+ * If some message was not fully emitted - it will be this element. If all messages are entire it will be ''.
+ *      Разделяет строку с сообщениями на массив сообщений. Последний элемент - остаток строки.
+ *      Если какое-либо сообщение не доставленно полностью - оно будет этим элементом.
+ *      Если все сообщения целые - последний элемент - ''.
+ * @param {String} raw
+ * @returns {String[]}
+ */
+CryptMaker.prototype.splitMessagesForce = function(raw){
+  return raw.split(this.eom);
 };
 
 /**
@@ -374,24 +385,26 @@ CryptMaker.prototype.splitMessagesAsync = function(raw, callback){
 };
 
 /**
- * Add EOM symbol to string.
- *      Добавляет символ конца сообщения к строке.
+ * Add EOM symbol to string if there is not EOM at the end.
+ *      Добавляет символ конца сообщения к строке, если она не оканчивается им.
  * @param {String} string
  * @returns {String}
  * @private
  */
 CryptMaker.prototype._addEom = function(string){
+  if (string.match(this.eomRE)) return string;
   return string+this.eom;
 };
 
 /**
- * Add EOM symbol to string.
- *      Добавляет символ конца сообщения к строке.
+ * Add EOM symbol to string if there is not EOM at the end.
+ *      Добавляет символ конца сообщения к строке, если она не оканчивается им.
  * @param {String} string
  * @returns {String}
  * @deprecated
  */
 CryptMaker.prototype.addEom = function(string){
+  if (string.match(this.eomRE)) return string;
   return string+this.eom;
 };
 
@@ -421,6 +434,7 @@ CryptMaker.prototype.replaceHeader = function(header, message){
   if (!message) return null;
   if (message.indexOf(this.sop) == -1) return null;
   var array = message.split(this.sop);
+  if (!array[1].match(this.eomRE)) array[1] += this.eom;
   array[0] = this.headerEncrypted?this.encrypt(JSON.stringify(header)):JSON.stringify(header);
   return array[0]+this.sop+array[1];
 };

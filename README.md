@@ -71,8 +71,8 @@ Return decrypted string. If `algorithm == 'no'` returns `str`.
 
 Parameters:
 
-Name      |Type    |Description
-----------|--------|-----------
+ Name     | Type   | Description
+----------|--------|------------------
 `str`     |	String | string to decrypt 	
 
 
@@ -82,9 +82,9 @@ Return encrypted string. If `algorithm == 'no'` returns `str`.
 
 Parameters:
 
-Name 	| Type   | Description
-------|--------|------------
-`str` | String | 	string to encrypt
+ Name | Type   | Description
+------|--------|------------------
+`str` | String | string to encrypt
 
 
 ## cm.format(messagePart) Deprecated
@@ -93,18 +93,18 @@ Make string from JSON with message part.
 
 Parameters:
 
-Name            | Type                 | Description
-----------------|----------------------|-------------
-`messagePart` 	| any, except function |
+ Name         | Type                 | Description
+--------------|----------------------|-------------
+`messagePart` | any, except function |
 
 ## cm.parse(messagePart) Deprecated
 Unformat message part back to Object | Boolean | String | Number.
 
 Parameters:
 
-Name        	| Type | Description
---------------|------|------------
-`messagePart`	|String| 	
+ Name       	| Type   | Description
+--------------|--------|------------
+`messagePart`	| String | 	
 
 
 ## cm.getBody(message)
@@ -114,9 +114,9 @@ or no SOP at message, returns `null`. Else if can't parse message - return `null
 
 Parameters:
 
-Name     | Type   |	Description
----------|--------|--------------------
-`message`| String |	encrypted message
+ Name     | Type   |	Description
+----------|--------|--------------------
+`message` | String | encrypted message
 
 
 ## cm.getBodyAsync(message, callback) Deprecated
@@ -126,10 +126,10 @@ Same as sync version. But doesn't return `null`, and returns error objects.
 
 Parameters:
 
-Name 	     | Type    | Description
------------|---------|------------------
-`message`  | String  | encrypted message
-`callback` | Function| 	
+ Name 	   | Type     | Description
+-----------|----------|------------------
+`message`  | String   | encrypted message
+`callback` | Function | 	
 
 
 ## cm.getHeader(message)
@@ -139,9 +139,9 @@ or no SOP at message, returns `null`. Else if can't parse message - return `null
 
 Parameters:
 
-Name  	 | Type   |	Description
----------|--------|--------------------
-`message`| String |	encrypted message
+ Name  	  | Type   |	Description
+----------|--------|--------------------
+`message` | String | encrypted message
 
 
 ## cm.getHeaderAsync(message, callback) Deprecated
@@ -151,10 +151,10 @@ Same as sync version. But doesn't return `null`, and returns error objects.
 
 Parameters:
 
-Name 	    | Type    | Description
-----------|---------|------------------
-`message` | String  | encrypted message
-`callback`| Function| 	
+ Name 	  | Type     | Description
+----------|----------|------------------
+`message` | String   | encrypted message
+`callback`| Function | 	
 
 
 ## cm.makeMessage(message[, body])
@@ -163,7 +163,7 @@ Make encrypt message form object. If body is defined - message should be header 
 
 Parameters:
 
-Name            |	Type    |	Description
+ Name           |	Type    |	Description
 ----------------|---------|----------------
 `message`       | Object  | Message object. If `body` is not defined - should be header object.	
 `message.header`|	Object  | Header of message. Only if `body` parameter is not defined.
@@ -180,12 +180,12 @@ Same as sync version. But doesn't return `null`, and returns error objects.
 
 Parameters:
 
-Name            |	Type    |	Description
-----------------|---------|----------------
-`message`       | Object  | Message object.	
-`message.header`|	Object  | Header of message.
-`message.body`  |	Object  | Body of message.	
-`callback`      | Function| Callback function.
+ Name            |	Type    |	Description
+-----------------|----------|----------------
+`message`        | Object   | Message object.	
+`message.header` | Object   | Header of message.
+`message.body`   | Object   | Body of message.	
+`callback`       | Function | Callback function.
 
 
 
@@ -196,9 +196,9 @@ Decrypt message form object. Returns Object like `{header: ... , body: ... }`
 
 Parameters:
 
-Name     |	Type  |	Description
----------|--------|----------------
-`message`| String | 
+ Name     |	Type   | Description
+----------|--------|----------------
+`message` | String | 
 
 
 ## cm.splitMessages(raw)
@@ -207,12 +207,28 @@ Splits many messages to array of messages.
 
 Parameters:
 
-Name 	| Type   |	Description
-------|--------|---------------
-`raw` 	| String |	raw messages string
+Name 	| Type   | Description
+------|--------|--------------------
+`raw` | String | raw messages string
 
 Returns:
 return `[]` if no EOMs at the end of raw strings
+
+
+## cm.splitMessagesForce(raw)
+
+Splits many massages at raw string to array. Last element is tail of raw string.
+If some message was not fully emitted - it will be this element. If all messages are entire it will be ''.
+
+
+Parameters:
+
+Name 	  | Type   |	Description
+--------|--------|---------------------
+`raw` 	| String | raw messages string
+
+Returns:
+return `[message1, message2, message3, ... , tail('' or part of messageN)]` tail is `''` if last message fully emitted. 
 
 
 ## cm.splitMessagesAsync(raw, callback) Deprecated
@@ -221,27 +237,27 @@ Splits many messages to array.
 
 Parameters:
 
-Name 	   | Type   | 	Description
----------|--------|---------------
-`raw` 	   |String  | 	messages
-`callback` |Function| 	
+ Name 	   | Type     |	Description
+-----------|----------|---------------
+`raw` 	   | String   |	messages
+`callback` | Function | 	
 
 Returns:
 return `[]` if no EOMs at the end of raw strings
 
 ## cm.addEom(string) Deprecated
 
-Splits many messages to array.
+Add EOM symbol to string if there is not EOM at the end.
 
 Parameters:
 
-Name 	   | Type   | 	Description
----------|--------|---------------
-`string` |String  | 	one encrypted message
+ Name 	 | Type   | Description
+---------|--------|----------------------
+`string` | String | one encrypted message
 	
 
 Returns:
-return string+EOM symbol.
+return `string+EOM` or `string`.
 
 
 ## cm.replaceHeader(header, message)
@@ -251,13 +267,13 @@ Replace header of message to new.
 Parameters:
 
 Name 	     | Type   | 	Description
------------|--------|---------------
-`header`	 |Object  | 	new header for message
-`message`	 |String  | 	encrypted message
+-----------|--------|-------------------------
+`header`	 | Object | 	new header for message
+`message`	 | String | 	encrypted message
 	
 
 Returns:
-return message with new header.
+return `message` with new header.
 
 
 
