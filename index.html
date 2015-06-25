@@ -31,10 +31,15 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p>Use node.js crypt api for make encrypted messages. Works sync.</p>
+        <h1>
+<a id="-crypt-maker" class="anchor" href="#-crypt-maker" aria-hidden="true"><span class="octicon octicon-link"></span></a> crypt-maker</h1>
 
-<p><a href="http://numminorihsf.github.io/crypt-maker/jsduck">Class documentation by jsDuck</a></p>
-          <p>There also is documentation on rus.</p>
+<p>Use node.js crypt api for make encrypted messages. Works sync.</p>
+
+<p><a href="http://numminorihsf.github.io/crypt-maker/jsduck">Class documentation by jsDuck</a>. </p>
+
+<p>There also is documentation on rus.</p>
+
 <p>Install with:</p>
 
 <pre><code>npm install crypt-maker
@@ -77,7 +82,7 @@
 <a id="methods" class="anchor" href="#methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>Methods</h1>
 
 <h2>
-<a id="cmcreateclient" class="anchor" href="#cmcreateclient" aria-hidden="true"><span class="octicon octicon-link"></span></a>CM.createCryptMaker()</h2>
+<a id="cmcreatecryptmaker" class="anchor" href="#cmcreatecryptmaker" aria-hidden="true"><span class="octicon octicon-link"></span></a>CM.createCryptMaker()</h2>
 
 <p>Is the same as:</p>
 
@@ -444,7 +449,35 @@ or no SOP at message, returns <code>null</code>. Else if can't parse message - r
 return <code>[]</code> if no EOMs at the end of raw strings</p>
 
 <h2>
-<a id="cmsplitmessagesasyncraw-deprecated" class="anchor" href="#cmsplitmessagesasyncraw-deprecated" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.splitMessagesAsync(raw, callback) Deprecated</h2>
+<a id="cmsplitmessagesforceraw" class="anchor" href="#cmsplitmessagesforceraw" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.splitMessagesForce(raw)</h2>
+
+<p>Splits many massages at raw string to array. Last element is tail of raw string.
+If some message was not fully emitted - it will be this element. If all messages are entire it will be ''.</p>
+
+<p>Parameters:</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>raw</code></td>
+<td>String</td>
+<td>raw messages string</td>
+</tr>
+</tbody>
+</table>
+
+<p>Returns:
+return <code>[message1, message2, message3, ... , tail('' or part of messageN)]</code> tail is <code>''</code> if last message fully emitted. </p>
+
+<h2>
+<a id="cmsplitmessagesasyncraw-callback-deprecated" class="anchor" href="#cmsplitmessagesasyncraw-callback-deprecated" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.splitMessagesAsync(raw, callback) Deprecated</h2>
 
 <p>Splits many messages to array.</p>
 
@@ -478,7 +511,7 @@ return <code>[]</code> if no EOMs at the end of raw strings</p>
 <h2>
 <a id="cmaddeomstring-deprecated" class="anchor" href="#cmaddeomstring-deprecated" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.addEom(string) Deprecated</h2>
 
-<p>Splits many messages to array.</p>
+<p>Add EOM symbol to string if there is not EOM at the end.</p>
 
 <p>Parameters:</p>
 
@@ -500,7 +533,7 @@ return <code>[]</code> if no EOMs at the end of raw strings</p>
 </table>
 
 <p>Returns:
-return string+EOM symbol.</p>
+return <code>string+EOM</code> or <code>string</code>.</p>
 
 <h2>
 <a id="cmreplaceheaderheader-message" class="anchor" href="#cmreplaceheaderheader-message" aria-hidden="true"><span class="octicon octicon-link"></span></a>cm.replaceHeader(header, message)</h2>
@@ -532,7 +565,7 @@ return string+EOM symbol.</p>
 </table>
 
 <p>Returns:
-return message with new header.</p>
+return <code>message</code> with new header.</p>
 
 <h1>
 <a id="license---mit-license" class="anchor" href="#license---mit-license" aria-hidden="true"><span class="octicon octicon-link"></span></a>LICENSE - "MIT License"</h1>
