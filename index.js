@@ -117,7 +117,26 @@ CryptMaker.prototype.decrypt = function(string){
   if (!string) return null;
   if (this.algorithm === 'no') return string;
   var decipher = CryptMaker._crypto.createDecipher(this.algorithm, this.key);
-  return decipher.update(string, 'hex', 'utf8') + decipher.final('utf8');
+  return this._safeDecrypt(decipher, string);
+};
+
+/**
+ *  * Decrypt string safety.
+ *      Безопасно расшифровывает строку.
+ * @param {Decipher} decipher
+ * @param {String} string
+ * @return {*}
+ * @private
+ */
+CryptMaker.prototype._safeDecrypt = function(decipher, string){
+  var res = null;
+  try {
+    res = decipher.update(string, 'hex', 'utf8') + decipher.final('utf8');
+  }
+  catch(e){
+    res = null;
+  }
+  return res;
 };
 
 /**
